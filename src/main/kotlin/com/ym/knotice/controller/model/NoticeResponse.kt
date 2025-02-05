@@ -11,6 +11,7 @@ data class NoticeResponse(
     val endDateTime: LocalDateTime?,
     val attachments: List<String>,
     val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime?,
     val viewCount: Long,
     val writer: String?
 ) {
@@ -24,6 +25,7 @@ data class NoticeResponse(
                 endDateTime = entity.endDateTime,
                 attachments = entity.attachments,
                 createdAt = entity.createdAt,
+                updatedAt = entity.updatedAt,
                 viewCount = entity.viewCount,
                 writer = entity.writer
             )
