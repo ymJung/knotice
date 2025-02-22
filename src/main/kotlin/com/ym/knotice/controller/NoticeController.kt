@@ -25,7 +25,7 @@ class NoticeController(
      * 조회
      */
     @GetMapping("/{noticeId}")
-    fun getNotice(@PathVariable noticeId: Long): NoticeResponse {
+    suspend fun getNotice(@PathVariable noticeId: Long): NoticeResponse {
         return noticeService.getNotice(noticeId)
     }
 

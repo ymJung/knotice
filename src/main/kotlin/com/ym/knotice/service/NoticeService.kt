@@ -4,6 +4,8 @@ import com.ym.knotice.controller.model.NoticeRequest
 import com.ym.knotice.controller.model.NoticeResponse
 import com.ym.knotice.repository.NoticeRepository
 import com.ym.knotice.repository.entity.NoticeEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -37,22 +39,18 @@ class NoticeService(
      * - deleted = false 인 경우만 유효
      * - 조회 시 조회수 증가
      */
-    fun getNotice(noticeId: Long): NoticeResponse {
+    suspend fun getNotice(noticeId: Long): NoticeResponse = withContext(Dispatchers.IO) {
         val notice = noticeRepository.findById(noticeId).orElseThrow {
             IllegalArgumentException("존재하지 않는 게시물입니다. ID: $noticeId")
         }
-
-        // 논리 삭제된 게시물이라면 예외 처리
         if (notice.deleted) {
             throw IllegalArgumentException("이미 삭제된 게시물입니다. ID: $noticeId")
         }
-
-        // 조회수 증가
         notice.viewCount += 1
         noticeRepository.save(notice)
-
-        return NoticeResponse.fromEntity(notice)
+        NoticeResponse.fromEntity(notice)
     }
+
 
     /**
      * 수정

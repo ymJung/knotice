@@ -1,14 +1,12 @@
 package com.ym.knotice.controller
-
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.ym.knotice.controller.model.NoticeRequest
 import com.ym.knotice.controller.model.NoticeResponse
 import com.ym.knotice.service.NoticeService
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -91,16 +89,16 @@ class NoticeControllerTest {
             writer = "Tester"
         )
 
-        every { noticeService.getNotice(noticeId) } returns response
+        coEvery { noticeService.getNotice(noticeId) } returns response
 
         // when & then
         mockMvc.perform(get("/api/notices/{noticeId}", noticeId))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.id").value(1L))
-            .andExpect(jsonPath("$.title").value("Test Notice"))
-            .andExpect(jsonPath("$.viewCount").value(10))
+            .andExpect { org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk() }
+            .andExpect { jsonPath("$.id").value(1L) }
+            .andExpect { jsonPath("$.title").value("Test Notice") }
+            .andExpect { jsonPath("$.viewCount").value(10) }
 
-        verify(exactly = 1) { noticeService.getNotice(noticeId) }
+        coVerify(exactly = 1) { noticeService.getNotice(noticeId) }
     }
 
     @Test

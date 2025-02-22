@@ -4,6 +4,7 @@ import com.ym.knotice.controller.model.NoticeRequest
 import com.ym.knotice.repository.NoticeRepository
 import com.ym.knotice.repository.entity.NoticeEntity
 import io.mockk.*
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -59,14 +60,15 @@ class NoticeServiceTest {
     }
 
     @Test
-    fun getNotice() {
+    fun getNotice() = runBlocking {
         // given
         val noticeId = 1L
         val existingNotice = NoticeEntity(
             id = noticeId,
             title = "test",
             content = "content",
-            deleted = false
+            deleted = false,
+            viewCount = 0
         )
 
         every { noticeRepository.findById(noticeId) } returns java.util.Optional.of(existingNotice)
@@ -81,7 +83,6 @@ class NoticeServiceTest {
         // then
         assertEquals(noticeId, result.id)
         assertEquals("test", result.title)
-
     }
 
     @Test
